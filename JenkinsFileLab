@@ -1,0 +1,51 @@
+
+pipeline {
+    agent { label 'SLAVEJOB' }
+	tools {
+            maven 'maven-3.6.2'
+            jdk 'JDK1.8'
+          }
+    stages { 
+        stage ("SCM Checkin-1") {
+            steps {
+              git branch: 'master', url: 'https://github.com/ranjeetMishra1990/MavenLab'
+            }
+        }
+        stage ("maven build") {
+            steps {
+                sh "mvn package"
+            }
+        }
+        stage ("Build the Docker Image") {
+            steps {
+                sh "docker build . -t  ranjeet1990/tomcat-Labb15"
+            }
+        }
+        stage ("Run the Container") {
+            steps {
+                sh "docker run -d -p 90:8080 --name cont0 ranjeet1990/tomcat-Labb15"
+            }
+        }
+        stage ("Check the webpage") {
+            steps {
+                sh "sleep 15"
+                sh "curl http://54.224.0.111:90"
+            }
+        }
+        stage ("Push to Docker HUB") {
+            steps {
+                sh "docker push ranjeet1990/tomcat-Labb15:latest"
+            }
+        }
+        stage ("Cleanup the previous Docker Image and container") {
+            input {
+                    message 'Can we Delete the Docker image and Container'
+            }
+            steps {
+                sh "docker rm cont0 -f"
+                sh "docker image rmi ranjeet1990/tomcat-Labb15 -f"
+				sh "mvn clean"
+            }
+        }
+    }
+}
