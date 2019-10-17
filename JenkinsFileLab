@@ -18,12 +18,12 @@ pipeline {
         }
         stage ("Build the Docker Image") {
             steps {
-                sh "docker build . -t  ranjeet1990/tomcat-Labb15"
+                sh "docker build . -t  ranjeet1990/tomcat-labb15"
             }
         }
         stage ("Run the Container") {
             steps {
-                sh "docker run -d -p 90:8080 --name cont0 ranjeet1990/tomcat-Labb15"
+                sh "docker run -d -p 90:8080 --name cont0 ranjeet1990/tomcat-labb15"
             }
         }
         stage ("Check the webpage") {
@@ -34,7 +34,7 @@ pipeline {
         }
         stage ("Push to Docker HUB") {
             steps {
-                sh "docker push ranjeet1990/tomcat-Labb15:latest"
+                sh "docker push ranjeet1990/tomcat-labb15:latest"
             }
         }
         stage ("Cleanup the previous Docker Image and container") {
@@ -43,8 +43,8 @@ pipeline {
             }
             steps {
                 sh "docker rm cont0 -f"
-                sh "docker image rmi ranjeet1990/tomcat-Labb15 -f"
-				sh "mvn clean"
+                sh "docker image rmi ranjeet1990/tomcat-labb15 -f"
+	        sh "mvn clean"
             }
         }
     }
